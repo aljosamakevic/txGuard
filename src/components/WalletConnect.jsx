@@ -1,4 +1,4 @@
-import { useWallet } from "@/hooks/useWallet";
+import { useWallet } from "../hooks/useWallet";
 
 const WalletConnect = () => {
   const { address, isConnected, connectWallet, disconnectWallet, chain, connectError } = useWallet();
