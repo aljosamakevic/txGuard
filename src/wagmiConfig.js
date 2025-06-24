@@ -1,12 +1,14 @@
-import { createConfig, configureChains } from "wagmi";
+import { createConfig } from "wagmi";
 import { sepolia } from "viem/chains";
-import { publicProvider } from "wagmi/providers/public";
+import { http } from "viem";
 import { metaMask } from "wagmi/connectors";
-
-const { publicClient } = configureChains([sepolia], [publicProvider()]);
 
 export const config = createConfig({
   autoConnect: true,
   connectors: [metaMask()],
-  publicClient,
+  chains: [sepolia],
+  transports: {
+    [sepolia.id]: http(),
+  },
+  ssr: true,
 });
