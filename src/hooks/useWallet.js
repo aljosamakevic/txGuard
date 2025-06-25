@@ -4,7 +4,7 @@ export const useWallet = () => {
   const { address, isConnected, chain } = useAccount();
   const { connect, connectors, error: connectError, pendingConnector } = useConnect();
   const { disconnect } = useDisconnect();
-  const { chains, switchChain } = useSwitchChain();
+  const { chains, switchChain, isPending } = useSwitchChain();
 
   const connectWallet = async () => {
     try {
@@ -23,6 +23,7 @@ export const useWallet = () => {
     connectError,
     pendingConnector,
     switchChain,
+    isSwitchChainPending: isPending,
     chains,
   };
 };
