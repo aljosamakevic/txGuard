@@ -7,7 +7,7 @@ export const parseSimulationResult = (result) => {
 
   return {
     success: simulation.status,
-    gasUsed: simulation.gasUsed,
+    gasUsed: simulation.gas_used,
     from: transaction.from,
     to: transaction.to,
     functionSelector: transaction.function_selector || "transfer",

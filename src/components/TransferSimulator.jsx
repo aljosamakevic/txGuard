@@ -67,7 +67,7 @@ const TransferSimulator = () => {
       {error && <p className="text-red-600 bg-red-50 px-4 py-2 rounded">{error}</p>}
 
       {parsedResult && (
-        <div className="p-4 bg-gray-100 rounded space-y-2">
+        <div className="p-4 bg-gray-600 rounded space-y-2">
           <p className="font-medium">
             ✅ Simulation:{" "}
             <span className={parsedResult.success ? "text-green-600" : "text-red-600"}>
