@@ -3,7 +3,7 @@ export const parseSimulationResult = (result) => {
 
   const { transaction, simulation } = result;
   //   const callTrace = transaction.transaction_info?.call_trace;
-  const assertTransfer = transaction.transaction.info?.asset_changes?.[0];
+  const assertTransfer = transaction.transaction_info?.asset_changes?.[0];
 
   return {
     success: simulation.status,
