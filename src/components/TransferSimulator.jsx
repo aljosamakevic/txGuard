@@ -4,17 +4,18 @@ import { sepolia } from "viem/chains";
 import { simulateTx } from "../lib/simulateTx";
 import { getContract } from "../contracts";
 import { useWallet } from "../hooks/useWallet";
+import { parseSimulationResult } from "../lib/parseSimulationResult";
 
 const TransferSimulator = () => {
   const { address, isConnected } = useWallet();
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState("");
-  const [result, setResult] = useState(null);
+  const [parsedResult, setParsedResult] = useState(null);
   const [error, setError] = useState(null);
 
   const handleTxSimulate = async () => {
     setError(null);
-    setResult(null);
+    setParsedResult(null);
 
     try {
       const { abi, address: tokenAddress } = getContract("token", sepolia.id);
@@ -31,7 +32,8 @@ const TransferSimulator = () => {
         data,
       });
 
-      setResult(simulation);
+      const parsed = parseSimulationResult(simulation);
+      setParsedResult(parsed);
     } catch (err) {
       console.log(err);
       setError(err.message);
@@ -64,8 +66,41 @@ const TransferSimulator = () => {
 
       {error && <p className="text-red-600 bg-red-50 px-4 py-2 rounded">{error}</p>}
 
-      {result && (
-        <pre className="text-sm bg-gray-100 p-4 rounded overflow-x-auto">{JSON.stringify(result, null, 2)}</pre>
+      {parsedResult && (
+        <div className="p-4 bg-gray-100 rounded space-y-2">
+          <p className="font-medium">
+            ✅ Simulation:{" "}
+            <span className={parsedResult.success ? "text-green-600" : "text-red-600"}>
+              {parsedResult.success ? "Success" : "Failed"}
+            </span>
+          </p>
+          <p>
+            Function: <span className="font-mono">{parsedResult.functionSelector}</span>
+          </p>
+          <p>
+            From: <span className="font-mono">{parsedResult.from}</span>
+          </p>
+          <p>
+            To: <span className="font-mono">{parsedResult.to}</span>
+          </p>
+          <p>
+            Amount:{" "}
+            <span className="font-mono">
+              {parsedResult.value} {parsedResult.tokenSymbol}
+            </span>
+          </p>
+          <p>
+            Gas Used: <span className="font-mono">{parsedResult.gasUsed}</span>
+          </p>
+          <a
+            href={parsedResult.dashboardUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 underline"
+          >
+            View on Tenderly
+          </a>
+        </div>
       )}
     </div>
   );

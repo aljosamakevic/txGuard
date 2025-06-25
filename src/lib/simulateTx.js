@@ -1,7 +1,7 @@
 import { sepolia } from "viem/chains";
 import { tenderly } from "./tenderlyConfig";
 
-export async function simulateTx({ from, to, value = "0x0", data }) {
+export const simulateTx = async ({ from, to, value = "0x0", data }) => {
   const { account, project, accessKey } = tenderly;
 
   const response = await fetch(`https://api.tenderly.co/api/v1/account/${account}/project/${project}/simulate`, {
@@ -29,4 +29,4 @@ export async function simulateTx({ from, to, value = "0x0", data }) {
   }
 
   return result;
-}
+};
