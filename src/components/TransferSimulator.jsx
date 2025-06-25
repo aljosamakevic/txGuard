@@ -17,7 +17,7 @@ const TransferSimulator = () => {
     setResult(null);
 
     try {
-      const { abi, address: tokenAddress } = getContract("TOKEN_CONTRACT", sepolia.id);
+      const { abi, address: tokenAddress } = getContract("token", sepolia.id);
 
       const data = encodeFunctionData({
         abi,
