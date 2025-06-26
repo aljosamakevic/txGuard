@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useReadContract, useWriteContract } from "wagmi";
+import { useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { encodeFunctionData, formatUnits, parseUnits, isAddress } from "viem";
 import { sepolia } from "viem/chains";
 import { simulateTx } from "../lib/simulateTx";
@@ -17,6 +17,7 @@ const TransferSimulator = () => {
   const [parsedResult, setParsedResult] = useState(null);
   const [error, setError] = useState(null);
   const { abi, address: tokenAddress } = getContract("token", sepolia.id);
+
   const {
     data: balance,
     error: balanceError,
@@ -31,12 +32,18 @@ const TransferSimulator = () => {
       enabled: true,
     },
   });
+
   const {
+    data: writeData,
     writeContract,
     isPending: transferIsPending,
     isSuccess: transferIsSuccess,
     error: transferError,
   } = useWriteContract();
+
+  const { isSuccess: txConfirmed } = useWaitForTransactionReceipt({
+    hash: writeData?.hash,
+  });
 
   const handleTxSimulate = async () => {
     if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
@@ -80,17 +87,23 @@ const TransferSimulator = () => {
   };
 
   const handleTransfer = async () => {
+    const parsedAmount = parseUnits(amount, 18);
+
     await writeContract({
       address: tokenAddress,
       abi,
       functionName: "transfer",
-      args: [recipient, BigInt(amount)],
+      args: [recipient, parsedAmount],
     });
   };
 
   useEffect(() => {
-    balanceRefetch();
-  }, [transferIsSuccess, balanceRefetch]);
+    console.log("useEffect");
+    if (txConfirmed) {
+      console.log("balanceRefetch");
+      balanceRefetch();
+    }
+  }, [txConfirmed, balanceRefetch]);
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white border border-gray-200 rounded-lg shadow space-y-4">
@@ -106,7 +119,7 @@ const TransferSimulator = () => {
         />
         <input
           type="number"
-          placeholder="Amount (wei)"
+          placeholder="Amount"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           className="w-full px-3 py-2 text-sm border text-black border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
@@ -116,7 +129,6 @@ const TransferSimulator = () => {
             <div className="flex flex-col items-start">
               <p className="text-xs text-gray-800">Your token balance is</p>
               <p className="text-xs text-gray-800">{formatUnits(balance, 18)}</p>
-              {/* TODO format amount input so user types whole tokens and I calculate in wei */}
             </div>
           )}
           {balanceError && <p className="text-sm text-red-600">{balanceError.message}</p>}
@@ -162,9 +174,9 @@ const TransferSimulator = () => {
               To: <span className="font-mono text-gray-600 break-all">{parsedResult.to}</span>
             </div>
             <div>
-              Amount:{" "}
+              Amount:
               <span className="font-mono text-gray-600">
-                {parsedResult.value} {parsedResult.tokenSymbol}
+                {formatUnits(parsedResult.value, 18)} {parsedResult.tokenSymbol}
               </span>
             </div>
             <div>
@@ -179,7 +191,6 @@ const TransferSimulator = () => {
               View on Tenderly
             </a>
           </div>
-          {/* Buttons for executing transfer and reading balance, only if simulation passes */}
           {parsedResult?.success && (
             <div className="space-y-2 mt-4">
               <button
