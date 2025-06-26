@@ -13,8 +13,6 @@ const WalletConnect = () => {
     isSwitchChainPending,
   } = useWallet();
 
-  console.log("chain", chain);
-
   return (
     <section className="p-6 rounded-lg border border-gray-200 max-w-md space-y-4 bg-white shadow-sm">
       {isConnected ? (
