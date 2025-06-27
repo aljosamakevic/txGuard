@@ -7,8 +7,9 @@ function App() {
     <>
       <h1>txGuard</h1>
       <div className="card"></div>
-      <div>
+      <div className="space-y-2">
         <h3>Simulate tx here</h3>
+
         <WalletConnect />
         <TransferSimulator />
       </div>

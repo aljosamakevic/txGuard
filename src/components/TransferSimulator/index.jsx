@@ -50,6 +50,7 @@ const TransferSimulator = () => {
   useEffect(() => {
     if (txConfirmed) balanceRefetch();
   }, [txConfirmed, balanceRefetch]);
+  //   TODO figure out why balanceRefetch doesn't refresh UI with newest balance amount
 
   const handleSimulate = async () => {
     setParsedResult(null);
@@ -71,29 +72,36 @@ const TransferSimulator = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white border rounded-lg shadow space-y-6">
-      <h2 className="text-xl text-black font-semibold">Transfer Simulation</h2>
-      <BalanceSection balance={balance} error={balanceError} isPending={balanceIsPending} onRefresh={balanceRefetch} />
-      <TransferForm
-        recipient={recipient}
-        setRecipient={setRecipient}
-        amount={amount}
-        setAmount={setAmount}
-        onSubmit={handleSimulate}
-        balance={balance}
-        error={error}
-        setError={setError}
-      />
-      {parsedResult && (
-        <SimulationResult
-          result={parsedResult}
-          onExecute={() => handleTransfer()}
-          isPending={transferIsPending}
-          isSuccess={transferIsSuccess}
-          error={transferError}
+    address && (
+      <div className="max-w-md mx-auto p-6 bg-white border rounded-lg shadow space-y-6">
+        <h2 className="text-xl text-black font-semibold">Transfer Simulation</h2>
+        <BalanceSection
+          balance={balance}
+          error={balanceError}
+          isPending={balanceIsPending}
+          onRefresh={balanceRefetch}
         />
-      )}
-    </div>
+        <TransferForm
+          recipient={recipient}
+          setRecipient={setRecipient}
+          amount={amount}
+          setAmount={setAmount}
+          onSubmit={handleSimulate}
+          balance={balance}
+          error={error}
+          setError={setError}
+        />
+        {parsedResult && (
+          <SimulationResult
+            result={parsedResult}
+            onExecute={() => handleTransfer()}
+            isPending={transferIsPending}
+            isSuccess={transferIsSuccess}
+            error={transferError}
+          />
+        )}
+      </div>
+    )
   );
 };
 
