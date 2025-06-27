@@ -5,9 +5,8 @@ import { sepolia } from "viem/chains";
 import { simulateTx } from "../lib/simulateTx";
 import { getContract } from "../contracts";
 import { useWallet } from "../hooks/useWallet";
-import { parseSimulationResult } from "../lib/parseSimulationResult";
+import { parseSimulationResult } from "../lib/parseSimulationResult.js";
 
-import { RefreshCcw } from "lucide-react";
 import Spinner from "../assets/Spinner";
 
 const TransferSimulator = () => {
@@ -108,7 +107,17 @@ const TransferSimulator = () => {
   return (
     <div className="max-w-md mx-auto p-6 bg-white border border-gray-200 rounded-lg shadow space-y-4">
       <h2 className="text-lg font-semibold text-gray-800">Transfer Simulation</h2>
-
+      <BalanceSection balance={balance} error={balanceError} isPending={balanceIsPending} onRefresh={balanceRefetch} />
+      <TransferForm
+        recipient={recipient}
+        setRecipient={setRecipient}
+        amount={amount}
+        setAmount={setAmount}
+        onSubmit={handleTxSimulate}
+        balance={balance}
+        error={error}
+        setError={setError}
+      />
       <div className="space-y-2">
         <input
           type="text"
@@ -124,25 +133,6 @@ const TransferSimulator = () => {
           onChange={(e) => setAmount(e.target.value)}
           className="w-full px-3 py-2 text-sm border text-black border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
-        <div className="flex items-center justify-between">
-          {balance && (
-            <div className="flex flex-col items-start">
-              <p className="text-xs text-gray-800">Your token balance is</p>
-              <p className="text-xs text-gray-800">{formatUnits(balance, 18)}</p>
-            </div>
-          )}
-          {balanceError && <p className="text-sm text-red-600">{balanceError.message}</p>}
-          <button
-            onClick={() => {
-              balanceRefetch();
-            }}
-            className="w-8 h-8 !p-2  rounded-full bg-blue-600 hover:bg-blue-700 transition disabled:opacity-50"
-            disabled={balanceIsPending}
-            title="Refresh balance"
-          >
-            {balanceIsPending ? <Spinner /> : <RefreshCcw className="w-4 h-4 text-white" />}
-          </button>
-        </div>
       </div>
 
       <button

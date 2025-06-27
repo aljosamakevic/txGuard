@@ -1,6 +1,6 @@
 import "./App.css";
 import WalletConnect from "./components/WalletConnect";
-import TransferSimulator from "./components/TransferSimulator";
+import TransferSimulator from "./components/TransferSimulator/index";
 
 function App() {
   return (
