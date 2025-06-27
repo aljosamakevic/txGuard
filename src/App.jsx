@@ -1,6 +1,7 @@
 import "./App.css";
 import WalletConnect from "./components/WalletConnect";
 import TransferSimulator from "./components/TransferSimulator/index";
+import ForkManager from "./components/ForkManager";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <h3>Simulate tx here</h3>
 
         <WalletConnect />
+        <ForkManager />
         <TransferSimulator />
       </div>
     </>
