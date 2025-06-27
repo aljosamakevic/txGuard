@@ -1,16 +1,16 @@
-import { useState, useMemo } from "react";
-import { createContext } from "react";
-import { createConfig } from "wagmi";
+import { useState, useMemo, createContext } from "react";
+import { createConfig, WagmiProvider } from "wagmi";
 import { metaMask } from "wagmi/connectors";
 import { http } from "viem";
 import { sepolia } from "viem/chains";
+import { config } from "../wagmiConfig";
 
-const VirutalTestnetContext = createContext({
+export const VirtualTestnetContext = createContext({
   testnet: {},
   setTestnet: () => {},
 });
 
-export const VirtualTestnetProvider = ({ children }) => {
+export function VirtualTestnetProvider({ children }) {
   const [testnet, setTestnet] = useState(null);
 
   const activeRpcUrl = useMemo(() => {
@@ -18,25 +18,31 @@ export const VirtualTestnetProvider = ({ children }) => {
       const rpc = testnet.rpcs.find((rpc) => rpc.name === "Public RPC");
       return rpc.url || testnet.rpcs[2].url || testnet.rpcs[0].url;
     }
-    return sepolia.repcUrls.default.http;
+    return sepolia.rpcUrls.default.http;
   }, [testnet]);
 
   const wagmiConfig = useMemo(() => {
-    createConfig({
-      autoConnect: true,
-      connectors: [metaMask()],
-      chains: [sepolia, testnet],
-      transports: {
-        [sepolia.id]: http(),
-        [Number(testnet.id)]: activeRpcUrl,
-      },
-      ssr: true,
-    });
+    if (testnet) {
+      return createConfig({
+        autoConnect: true,
+        connectors: [metaMask()],
+        chains: [sepolia, testnet],
+        transports: {
+          [sepolia.id]: http(),
+          [Number(testnet.id)]: activeRpcUrl,
+        },
+        ssr: true,
+      });
+    } else {
+      return config;
+    }
   }, [activeRpcUrl, testnet]);
 
   return (
-    <VirutalTestnetContext.Provider value={{ testnet, setTestnet }}>
-      <WagmiConfig config={wagmiConfig}>{children}</WagmiConfig>
-    </VirutalTestnetContext.Provider>
+    <VirtualTestnetContext.Provider value={{ testnet, setTestnet }}>
+      <WagmiProvider config={wagmiConfig}>{children}</WagmiProvider>
+    </VirtualTestnetContext.Provider>
   );
-};
+}
+
+export default VirtualTestnetProvider;

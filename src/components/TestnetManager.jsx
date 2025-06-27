@@ -2,11 +2,13 @@ import { useState } from "react";
 import { sepolia } from "viem/chains";
 import { useWallet } from "../hooks/useWallet";
 import { createTestnet, deleteTestnet } from "../lib/tenderlyVirtualTestnet";
+// import { VirtualTestnetContext } from "../context/VirtualTestnetContext";
 
 const TestnetManager = () => {
   const { address } = useWallet();
 
   const [testnet, setTestnet] = useState(null);
+  // const { testnet, setTestnet } = useContext(VirtualTestnetContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
