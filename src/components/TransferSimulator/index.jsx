@@ -54,12 +54,7 @@ const TransferSimulator = () => {
   const handleSimulate = async () => {
     setParsedResult(null);
     const data = encodeFunctionData({ abi, functionName: "transfer", args: [recipient, parseUnits(amount, 18)] });
-    console.log("data", data);
-    console.log("address", address);
-    console.log("tokenAddress", tokenAddress);
     const simulation = await simulateTx({ from: address, to: tokenAddress, data });
-    console.log("simulation", simulation);
-    console.log("parsedSimulation", parseSimulationResult(simulation));
 
     setParsedResult(parseSimulationResult(simulation));
   };
