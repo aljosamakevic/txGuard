@@ -50,7 +50,7 @@ const TransferSimulator = () => {
   useEffect(() => {
     if (txConfirmed) balanceRefetch();
   }, [txConfirmed, balanceRefetch]);
-  //   TODO figure out why balanceRefetch doesn't refresh UI with newest balance amount
+  //   TODO figure out why balanceRefetch doesn't refresh UI with newest balance amount after the TX from handleTransfer succesfully went through
 
   const handleSimulate = async () => {
     setParsedResult(null);

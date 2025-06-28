@@ -9,7 +9,7 @@ export const VirtualTestnetContext = createContext({
   testnet: {},
   setTestnet: () => {},
 });
-
+//   TODO figure out how to dynamically remake wagmiprovider when a VirtualTestnet is built, so that the whole dapp and its components support not only sepolia but also that virtual testnet network as well - I realize this is potentially just a bad idea, but I wanted to try
 export function VirtualTestnetProvider({ children }) {
   const [testnet, setTestnet] = useState(null);
 
