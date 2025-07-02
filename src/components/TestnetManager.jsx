@@ -17,13 +17,10 @@ const TestnetManager = () => {
     setError(null);
 
     try {
-      console.log("pre-testnet");
       const slug = `my-testnet-${Date.now()}`;
       const display_name = "My Virtual Sepolia TestNet";
       const chain_id = sepolia.id * 10 + 2;
-      console.log("createTestnet params", slug, display_name, chain_id);
       const result = await createTestnet({ slug, display_name, chain_id });
-      console.log("post-testnet", result);
       setTestnet(result);
     } catch (err) {
       setError(err.message);
